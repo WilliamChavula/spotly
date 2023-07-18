@@ -8,7 +8,11 @@ import ModalProvider from "@/providers/ModalProvider";
 import ToastProvider from "@/providers/ToastProvider";
 import getSongsByUserId from "@/actions/getSongsByUserId";
 import SessionUserSongProvider from "@/providers/SessionUserSongProvider";
+import ProductsProvider from "@/providers/ProductsWithPriceProvider";
 import Player from "@/components/Player";
+
+import getActiveProductsWithPrices from "@/actions/getActiveProductsWithPrices";
+import ProductsWithPriceProvider from "@/providers/ProductsWithPriceProvider";
 
 const font = Figtree({ subsets: ["latin"] });
 
@@ -25,13 +29,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const sessionUserSongs = await getSongsByUserId();
+  const initialProducts = await getActiveProductsWithPrices();
   return (
     <html lang="en">
       <body className={font.className}>
         <ToastProvider />
         <SupabaseProvider>
           <UserProvider>
-            <ModalProvider />
+            <ProductsWithPriceProvider products={initialProducts}>
+              <ModalProvider />
+            </ProductsWithPriceProvider>
             <SessionUserSongProvider userSongs={sessionUserSongs}>
               <Sidebar>{children}</Sidebar>
               <Player />

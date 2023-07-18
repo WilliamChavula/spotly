@@ -4,6 +4,8 @@ import React from "react";
 
 import useAuthModal from "@/hooks/useAuthModal";
 import useUploadModal from "@/hooks/useUploadModal";
+import useSongPlay from "@/hooks/useSongPlay";
+import useStripeSubscriptionModal from "@/hooks/useStripeSubscriptionModal";
 import { useUser } from "@/hooks/useUser";
 import { useUserSongs } from "@/providers/SessionUserSongProvider";
 
@@ -11,21 +13,22 @@ import LibrarySongItem from "@/components/LibrarySongItem";
 
 import { LuLibrary } from "react-icons/lu";
 import { AiOutlinePlus } from "react-icons/ai";
-import useSongPlay from "@/hooks/useSongPlay";
 
 const Library = () => {
   const authModel = useAuthModal();
   const uploadModal = useUploadModal();
-  const { user } = useUser();
+  const { user, subscription } = useUser();
   const { userSongs } = useUserSongs()!;
   const onPlay = useSongPlay(userSongs);
+  const subscriptionModal = useStripeSubscriptionModal();
 
   const handleOnClick = () => {
     if (!user) {
       return authModel.onOpen();
     }
 
-    // Todo: Check for subscription from Stripe
+    if (!subscription) return subscriptionModal.onOpen();
+
     return uploadModal.onOpen();
   };
 

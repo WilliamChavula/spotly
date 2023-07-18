@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Song } from "@/types";
 import useLoadResource from "@/hooks/useLoadResource";
+import usePlayer from "@/hooks/usePlayer";
 
 const LibrarySongItem = ({
   song,
@@ -12,10 +13,13 @@ const LibrarySongItem = ({
   song: Song;
   onPlaySong?: (id: string) => void;
 }) => {
+  const player = usePlayer();
   const image = useLoadResource(song.image_path, "images");
 
   const handleClick = () => {
     if (onPlaySong) return onPlaySong(song.id);
+
+    return player.setId(song.id);
   };
   return (
     <div

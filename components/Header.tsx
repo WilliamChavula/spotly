@@ -10,11 +10,13 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { IconType } from "react-icons";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
+import { FaUserAlt } from "react-icons/fa";
+
+import useAuthModal from "@/hooks/useAuthModal";
+import usePlayer from "@/hooks/usePlayer";
+import { useUser } from "@/hooks/useUser";
 
 import Button from "@/components/Button";
-import useAuthModal from "@/hooks/useAuthModal";
-import { useUser } from "@/hooks/useUser";
-import { FaUserAlt } from "react-icons/fa";
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -41,12 +43,13 @@ const CaretButtonComponent: React.FC<CaretIconProps> = ({
 const Header: React.FC<HeaderProps> = ({ children, className }) => {
   const router = useRouter();
   const authModal = useAuthModal();
+  const player = usePlayer();
   const supabaseClient = useSupabaseClient();
   const { user } = useUser();
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();
 
-    // Todo: reset any playing songs
+    player.reset();
     router.refresh();
 
     if (error) toast.error(error.message);
